@@ -285,7 +285,7 @@ export const paymentVerification = async (req, res) => {
                   
               await deleteVistuserByEmail(email);
             res.redirect(
-            `${process.env.frontendURL}/paymentsuccess?reference=${razorpay_payment_id}`);
+            `http://localhost:3000/paymentsuccess?reference=${razorpay_payment_id}`);
             
        
 
