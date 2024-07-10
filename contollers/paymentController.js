@@ -285,7 +285,7 @@ export const paymentVerification = async (req, res) => {
                   
               await deleteVistuserByEmail(email);
             res.redirect(
-            `https://deluxe-chimera-9f85f8.netlify.app/paymentsuccess?reference=${razorpay_payment_id}`);
+            `https://benevolent-queijadas-f11d8c.netlify.app/paymentsuccess?reference=${razorpay_payment_id}`);
             
        
 
