@@ -1,10 +1,11 @@
 import express from "express";
 import { config } from "dotenv";
 import { Contact } from "./models/contact.js";
+import { Rent } from "./models/rentkgv.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
-import path from "path"; // Add this line
+import path from "path"; 
 
-import nodemailer from "nodemailer"; // Import nodemailer
+import nodemailer from "nodemailer";
 import { Vistuser } from "./models/visituser.js";
 import cors from "cors";
 
@@ -22,6 +23,7 @@ app.get("/api/getkey", (req, res) =>
   res.status(200).json({ key: process.env.RAZORPAY_API_KEY })
 );
 
+
  app.post("/vistuser",async(req,res) =>{
   try {
     let vistuser = new Vistuser(req.body);
@@ -31,8 +33,6 @@ app.get("/api/getkey", (req, res) =>
     res.send(500).send(error.message);
   }
  });
-
-
 
 app.post("/register", async (req, resp) => {
   try {
@@ -45,37 +45,13 @@ app.post("/register", async (req, resp) => {
 
     function sendEmailNotification(formData) {
       const { email } = formData;
-
-      // const transporter = nodemailer.createTransport({
-      //   service:process.env.service,
-      //   auth: {
-      //     user: process.env.user,
-      //     pass: process.env.pass,
-      //   },
-      // });
-
-
-      // const transporter = nodemailer.createTransport({
-      //   host: process.env.host,
-      //   secure: false,
-      //   port: process.env.port,
-      //   service:process.env.service,
-      //   auth: {
-      //     user: process.env.user,
-      //     pass: process.env.pass,
-      //   },
-      // });
-
       const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
-              user: "parveenprajapati9310@gmail.com", // Update with your Gmail address
+              user: "parveenprajapati9310@gmail.com", 
               pass: "davajvjvmpyfjlri", // Update with your Gmail password
             },
           });
-        
-      
-    
       const mailOptions = {
         from: "team@kgvl.co.in",
         to: email,
@@ -96,8 +72,6 @@ app.post("/register", async (req, resp) => {
         }
       });
     }
-    
-
     sendEmailNotification(req.body);
 
     resp.send(result);
@@ -106,5 +80,53 @@ app.post("/register", async (req, resp) => {
     resp.status(500).send(error.message);
   }
 });
+
+app.post("/rent", async (req, resp) => {
+  try {
+    // Save to the database
+    let rent = new Rent(req.body);
+    let result = await rent.save();
+       console.log(req.body);
+       
+    // Send email notification
+
+    function sendEmailNotification(formData) {
+      const { email } = formData;
+      const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+              user: "parveenprajapati9310@gmail.com", 
+              pass: "davajvjvmpyfjlri", 
+            },
+          });
+      const mailOptions = {
+        from: "team@kgvl.co.in",
+        to: email,
+        subject: "New KGV Bike for rent",
+        html: `<p>New Form details:</p>
+               <p>Name: ${formData.name}</p>
+               <p>Lastname: ${formData.lastname}</p>
+               <p>Email: ${formData.email}</p>
+               <p>Address: ${formData.address}</p>
+               <p>phonenumber: ${formData.phonenumber}</p>`,
+      };
+    
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log("Email error: " + error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+    }
+    sendEmailNotification(req.body);
+
+    resp.send(result);
+    console.log("done contact")
+  } catch (error) {
+    resp.status(500).send(error.message);
+  }
+});
+
 
 
