@@ -1,19 +1,10 @@
 import { instance } from "../server.js";
 import crypto from "crypto";
 import { Payment } from "../models/paymentModel.js"; // Adjust the path accordingly
-import nodemailer from "nodemailer"; // Import nodemailer
 import Razorpay from "razorpay";
 import { Vistuser } from "../models/visituser.js";
+import { transporter } from "../util/nodemailer.js";
 
-const transporter = nodemailer.createTransport({
-  host: "smtpout.secureserver.net",
-  secure: true,
-  port: 465,
-  auth: {
-    user: process.env.SENDER_EMAIL,
-    pass: process.env.SENDER_PASSWORD,
-  },
-});
 
 export const checkout = async (req, res) => {
   const options = {
