@@ -11,7 +11,7 @@ import cors from "cors";
 config({ path: "./config/config.env" });
 export const app = express();
 
-app.use(cors());
+app.use(cors('*'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -75,7 +75,7 @@ app.post("/rent", async (req, resp) => {
   try {
     // Save to the database
     let rent = new Rent(req.body);
-    let result = await rent.save();
+    let result = await rent.save();   
     console.log(req.body);
 
     // Send email notification
